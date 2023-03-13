@@ -1,0 +1,8 @@
+<aspectj>
+    <aspects>
+        <aspect name="edu.ifmo.diploma.aspect"/>
+        <weaver options="-verbose -showWeaveInfo">
+            <include within="edu.ifmo.diploma.aspect.*"/>
+        </weaver>
+    </aspects>
+</aspectj>
