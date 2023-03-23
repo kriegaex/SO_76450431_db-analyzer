@@ -15,14 +15,25 @@
         <maven.compiler.source>17</maven.compiler.source>
         <maven.compiler.target>17</maven.compiler.target>
         <!--project dependencies-->
-        <apache.commons.version>3.12.0</apache.commons.version>
+        <apache.commons.lang3.version>3.12.0</apache.commons.lang3.version>
+        <apache.commons.collection.version>4.4</apache.commons.collection.version>
+        <apache.io.version>1.3.2</apache.io.version>
+        <postgresql.version>42.5.1</postgresql.version>
+        <mysql.version>8.0.32</mysql.version>
+        <oracle.version>23.2.0.0</oracle.version>
+        <vavr.version>0.9.0</vavr.version>
         <com.jackson.version>2.13.4.1</com.jackson.version>
         <aspectj.version>1.9.7</aspectj.version>
         <freemarker.version>2.3.32</freemarker.version>
         <slf4j.version>2.0.3</slf4j.version>
         <logback.version>1.4.4</logback.version>
+        <junit.version>5.9.2</junit.version>
+        <assertj.version>3.24.2</assertj.version>
+        <awaitility.version>4.2.0</awaitility.version>
+        <testcontainer.version>1.18.0</testcontainer.version>
         <!--project plugin dependencies-->
         <aspect.compiler.plugin.version>1.14.0</aspect.compiler.plugin.version>
+        <surefire.plugin.version>3.0.0-M7</surefire.plugin.version>
     </properties>
 
     <dependencies>
@@ -38,24 +49,18 @@
         </dependency>
         <dependency>
             <groupId>org.apache.commons</groupId>
+            <artifactId>commons-collections4</artifactId>
+            <version>${apache.commons.collection.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.commons</groupId>
             <artifactId>commons-lang3</artifactId>
-            <version>${apache.commons.version}</version>
+            <version>${apache.commons.lang3.version}</version>
         </dependency>
         <dependency>
             <groupId>io.vavr</groupId>
             <artifactId>vavr</artifactId>
-            <version>0.9.0</version>
-        </dependency>
-        <dependency>
-            <groupId>org.postgresql</groupId>
-            <artifactId>postgresql</artifactId>
-            <version>42.5.0</version>
-        </dependency>
-        <dependency>
-            <groupId>org.hibernate</groupId>
-            <artifactId>hibernate-core</artifactId>
-            <version>6.1.0.Final</version>
-            <type>pom</type>
+            <version>${vavr.version}</version>
         </dependency>
         <dependency>
             <groupId>org.aspectj</groupId>
@@ -88,6 +93,62 @@
             <artifactId>junit-jupiter</artifactId>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>org.awaitility</groupId>
+            <artifactId>awaitility</artifactId>
+            <version>${awaitility.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.assertj</groupId>
+            <artifactId>assertj-core</artifactId>
+            <version>${assertj.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.testcontainers</groupId>
+            <artifactId>postgresql</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.testcontainers</groupId>
+            <artifactId>mysql</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.testcontainers</groupId>
+            <artifactId>oracle-xe</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.testcontainers</groupId>
+            <artifactId>junit-jupiter</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.postgresql</groupId>
+            <artifactId>postgresql</artifactId>
+            <version>${postgresql.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>mysql</groupId>
+            <artifactId>mysql-connector-java</artifactId>
+            <version>${mysql.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.oracle.database.jdbc</groupId>
+            <artifactId>ojdbc11</artifactId>
+            <version>${oracle.version}</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-io</artifactId>
+            <version>${apache.io.version}</version>
+        </dependency>
     </dependencies>
 
     <dependencyManagement>
@@ -95,7 +156,14 @@
             <dependency>
                 <groupId>org.junit</groupId>
                 <artifactId>junit-bom</artifactId>
-                <version>5.9.2</version>
+                <version>${junit.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.testcontainers</groupId>
+                <artifactId>testcontainers-bom</artifactId>
+                <version>${testcontainer.version}</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
@@ -106,16 +174,11 @@
     <build>
         <plugins>
             <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-surefire-plugin</artifactId>
-                <version>3.0.0-M7</version>
-            </plugin>
-            <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>aspectj-maven-plugin</artifactId>
                 <version>${aspect.compiler.plugin.version}</version>
                 <configuration>
-                    <complianceLevel>11</complianceLevel>
+                    <complianceLevel>15</complianceLevel>
                     <showWeaveInfo>true</showWeaveInfo>
                     <Xlint>ignore</Xlint>
                     <encoding>UTF-8</encoding>
@@ -131,4 +194,68 @@
             </plugin>
         </plugins>
     </build>
+
+    <profiles>
+        <profile>
+            <id>postgres-integration</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <artifactId>maven-surefire-plugin</artifactId>
+                        <version>${surefire.plugin.version}</version>
+                        <configuration>
+                            <groups>PostgreSQL</groups>
+                            <environmentVariables>
+                                <DB_ANALYZER_PLATFORM>POSTGRESQL</DB_ANALYZER_PLATFORM>
+                                <DB_ANALYZER_REPORT_CONTEXT_FLUSH_SECONDS>1</DB_ANALYZER_REPORT_CONTEXT_FLUSH_SECONDS>
+                            </environmentVariables>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        <profile>
+            <id>mysql-integration</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <artifactId>maven-surefire-plugin</artifactId>
+                        <version>${surefire.plugin.version}</version>
+                        <configuration>
+                            <groups>MySQL</groups>
+                            <environmentVariables>
+                                <DB_ANALYZER_PLATFORM>MYSQL</DB_ANALYZER_PLATFORM>
+                                <DB_ANALYZER_REPORT_CONTEXT_FLUSH_SECONDS>1</DB_ANALYZER_REPORT_CONTEXT_FLUSH_SECONDS>
+                            </environmentVariables>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        <profile>
+            <id>oracle-integration</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <artifactId>maven-surefire-plugin</artifactId>
+                        <version>${surefire.plugin.version}</version>
+                        <configuration>
+                            <groups>Oracle</groups>
+                            <environmentVariables>
+                                <DB_ANALYZER_PLATFORM>ORACLE</DB_ANALYZER_PLATFORM>
+                                <DB_ANALYZER_REPORT_CONTEXT_FLUSH_SECONDS>1</DB_ANALYZER_REPORT_CONTEXT_FLUSH_SECONDS>
+                            </environmentVariables>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
+
+    <distributionManagement>
+        <repository>
+            <id>gitlab-maven</id>
+            <url>${project.db.analyzer.url}</url>
+        </repository>
+    </distributionManagement>
 </project>

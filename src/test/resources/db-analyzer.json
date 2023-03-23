@@ -1,0 +1,8 @@
+{
+  "query_regexp": [
+    {
+      "regex": "(SELECT|select)\\s+\\*\\s+(FROM|from)\\s+\\`?[a-zA-Z0-9_]+\\`?",
+      "ms": 1
+    }
+  ]
+}

@@ -3,34 +3,51 @@ package edu.ifmo.diploma.model;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class ExplainResult {
     @JsonProperty("Plan")
     private ExplainPlan plan;
 
-    @JsonProperty("Planning Time")
-    private double planningTime;
     @JsonProperty("Execution Time")
-    private Double executionTime;
+    private double executionTime;
+    private Long criticalTime;
 
-    private StackTraceElement[] stackTrace;
+    private final Collection<String> advice = new ArrayList<>();
+
+    private StackTraceElement[] baseStackTrace;
+
+    private StackTraceElement[] moduleStackTrace;
 
     public ExplainResult() {
     }
 
-    public double getPlanningTime() {
-        return planningTime;
-    }
-    public void setPlanningTime(double planningTime) {
-        this.planningTime = planningTime;
+    public Collection<String> getAdvice() {
+        return advice;
     }
 
-    public Double getExecutionTime() {
+    public void addAdvice(String advice) {
+        if (advice == null) return;
+        this.advice.add(advice);
+    }
+
+    public double getExecutionTime() {
         return executionTime;
     }
 
-    public void setExecutionTime(Double executionTime) {
+    public void setExecutionTime(double executionTime) {
         this.executionTime = executionTime;
+    }
+
+    public Long getCriticalTime() {
+        return criticalTime;
+    }
+
+    public void setCriticalTime(Long criticalTime) {
+        this.criticalTime = criticalTime;
     }
 
     public ExplainPlan getPlan() {
@@ -41,11 +58,21 @@ public class ExplainResult {
         this.plan = plan;
     }
 
-    public void setStackTrace(StackTraceElement[] stackTrace) {
-        this.stackTrace = stackTrace;
+    public ExplainResult setBaseStackTrace(StackTraceElement[] stackTrace) {
+        this.baseStackTrace = Arrays.copyOf(stackTrace, stackTrace.length);
+        return this;
     }
 
-    public StackTraceElement[] getStackTrace() {
-        return stackTrace;
+    public ExplainResult setModuleStackTrace(StackTraceElement[] stackTrace) {
+        this.moduleStackTrace = Arrays.copyOf(stackTrace, stackTrace.length);
+        return this;
+    }
+
+    public StackTraceElement[] getBaseStackTrace() {
+        return Arrays.copyOf(baseStackTrace, baseStackTrace.length);
+    }
+
+    public StackTraceElement[] getModuleStackTrace() {
+        return Arrays.copyOf(moduleStackTrace, moduleStackTrace.length);
     }
 }

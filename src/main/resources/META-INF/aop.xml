@@ -1,8 +1,8 @@
 <aspectj>
     <aspects>
-        <aspect name="edu.ifmo.diploma.aspect"/>
+        <aspect name="edu.ifmo.diploma.context.AnalyzerAspect"/>
         <weaver options="-verbose -showWeaveInfo">
-            <include within="edu.ifmo.diploma.aspect.*"/>
+            <include within="edu.ifmo.diploma.context.*"/>
         </weaver>
     </aspects>
 </aspectj>
